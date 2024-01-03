@@ -47,7 +47,7 @@ class StockAnalyzer:
             return 0
 
     def get_stocks(self, sentiment):
-        api_token = 'bkFlXpICMUpNZCLaTNELH943DITgon5LRxnBHuw7'
+        api_token = 'YOUR TOKEN GOES HERE'
         conn = http.client.HTTPSConnection('api.marketaux.com')
         symbols = ','.join(self.tickers)
         countries = 'us'
