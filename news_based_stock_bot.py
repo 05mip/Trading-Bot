@@ -4,6 +4,7 @@ import requests
 import http.client
 import json
 from datetime import datetime
+import time
 
 class StockAnalyzer:
     MAX_SHARES = 15
@@ -118,28 +119,28 @@ class StockAnalyzer:
     def adjust_to_afford(self):
         total_cost = 0
         adjusted_buy_list = self.buy_list[:]
+        
+        stock_prices = {ticker: self.get_stock_price(ticker) for ticker, _ in self.buy_list if self.get_stock_price(ticker) is not None}
 
         for ticker, shares in self.buy_list:
-            stock_price = self.get_stock_price(ticker)
+            stock_price = stock_prices[ticker]
 
-            if stock_price is not None:
-                total_cost += stock_price * shares
-            else:
-                print(f"Unable to get stock price for {ticker}. Skipping...")
-                continue
+            total_cost += stock_price * shares
 
         while total_cost > self.current_cash and adjusted_buy_list:
-            most_expensive_ticker = max(adjusted_buy_list, key=lambda x: self.get_stock_price(x[0]) * x[1])
+            most_expensive_ticker = max(adjusted_buy_list, key=lambda x: stock_prices[x[0]] * x[1])
             ticker, shares = most_expensive_ticker
 
             if shares > 1:
                 adjusted_shares = shares - 1
                 adjusted_buy_list = [(t, s - 1) if t == ticker else (t, s) for t, s in adjusted_buy_list]
-                total_cost -= self.get_stock_price(ticker)
+                total_cost -= stock_prices[ticker]
                 print(f"Total Cost: ${total_cost}. Reducing shares for {ticker} to {adjusted_shares} due to budget constraints.")
             else:
                 adjusted_buy_list.remove(most_expensive_ticker)
                 print(f"Cannot reduce shares further for {ticker}. Removing from the buy list.")
+
+            time.sleep(0.1)
 
         self.buy_list = adjusted_buy_list
 
