@@ -7,4 +7,4 @@
   Finally, the bot will search the tickers in the news using Marketaux API and will provide a list of tickers to be sold and tickers to be bought
 </p>
 
-<p>The bot does not search for indices.</p>
+<p>The bot does not search for indices. Also, you need to put your own API token in the given spot</p>
